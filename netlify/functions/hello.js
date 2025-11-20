@@ -6,6 +6,7 @@ export default async () => {
         controller.enqueue(encoder.encode("<html><body><ol>"));
         let i = 0;
         const timer = setInterval(() => {
+            console.log("Hello at", formatter.format(new Date()));
           controller.enqueue(
             encoder.encode(
               `<li>Hello at ${formatter.format(new Date())}</li>\n\n`
