@@ -1,15 +1,24 @@
-// hello there!
-// 
-// I'm a serverless function that you can deploy as part of your site.
-// I'll get deployed to AWS Lambda, but you don't need to know that. 
-// You can develop and deploy serverless functions right here as part
-// of your site. Netlify Functions will handle the rest for you.
+export default async () => {
+    const encoder = new TextEncoder();
+    const formatter = new Intl.DateTimeFormat("en", { timeStyle: "medium" });
+    const body = new ReadableStream({
+      start(controller) {
+        controller.enqueue(encoder.encode("<html><body><ol>"));
+        let i = 0;
+        const timer = setInterval(() => {
+          controller.enqueue(
+            encoder.encode(
+              `<li>Hello at ${formatter.format(new Date())}</li>\n\n`
+            )
+          );
+          if (i++ >= 100) {
+            controller.enqueue(encoder.encode("</ol></body></html>"));
+            controller.close();
+            clearInterval(timer);
+          }
+        }, 1000);
+      }
+    });
 
-
-exports.handler = async event => {
-    const subject = event.queryStringParameters.name || 'World'
-    return {
-        statusCode: 200,
-        body: `Hello ${subject}!`,
-    }
-}
+    return new Response(body);
+  };
