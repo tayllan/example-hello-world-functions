@@ -1,6 +1,11 @@
 export default async () => {
     const encoder = new TextEncoder();
-    const formatter = new Intl.DateTimeFormat("en", { timeStyle: "medium" });
+    const formatter = new Intl.DateTimeFormat("en", {
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      fractionalSecondDigits: 3
+    });
     const body = new ReadableStream({
       start(controller) {
         controller.enqueue(encoder.encode("<html><body><ol>"));
@@ -12,12 +17,12 @@ export default async () => {
               `<li>Hello at ${formatter.format(new Date())}</li>\n\n`
             )
           );
-          if (i++ >= 100) {
+          if (i++ >= 1000) {
             controller.enqueue(encoder.encode("</ol></body></html>"));
             controller.close();
             clearInterval(timer);
           }
-        }, 1000);
+        }, 100);
       }
     });
 
